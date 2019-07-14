@@ -55,7 +55,36 @@ def rename_md5(path_src: str) -> None:
             shutil.copyfile(file_name_old, file_name_new)
 
 
+# 遍历所有的文件。这里面排除了 "." 开头的文件
+def get_all_files(path):
+    all_file = []
+    for dirpath, dirnames, filenames in os.walk(path):
+        for dir_name in dirnames:
+            print(os.path.join(dirpath, dir_name))
+        for pure_file_name in filenames:
+            if pure_file_name[0] == ".":
+                continue
+            full_file_name = os.path.join(dirpath, pure_file_name)
+            print(pure_file_name)
+
+            time_stamp = os.path.getmtime(full_file_name)
+            local_time = time.localtime(time_stamp)
+            str_time = time.strftime("%Y-%m-%d_%H-%M-%S", local_time)
+            print(str_time)
+
+            new_file_name = os.path.join(dirpath, str_time + "_" + pure_file_name)
+
+            os.rename(full_file_name, new_file_name)
+            print(new_file_name)
+            print()
+            all_file.append(full_file_name)
+    return all_file
+
+
 if __name__ == '__main__':
     print('start')
     # rename_order('', 'D:\1')
-    rename_md5(r'D:\1')
+    # rename_md5(r'D:\1')
+    all_file = get_all_files(r'/Users/aac/desktop/1')
+    print(all_file)
+    print(all_file.__len__())
