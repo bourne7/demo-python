@@ -1,7 +1,5 @@
-import os
-import sys
-import time
 import calendar
+import time
 
 
 # 用于替换一个文本中的字符串

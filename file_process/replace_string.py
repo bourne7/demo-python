@@ -21,8 +21,8 @@ def delete_text(file, str_old, str_new):
 if __name__ == '__main__':
     working_path = os.getcwd()
     print(working_path)
-    delete_text(working_path + os.sep + '1.txt', '  ', '')
+    delete_text(working_path + os.sep + 'replace_string.txt', '  ', '')
 
     c = input("\ndone\n")
-    time.sleep(3)
+    time.sleep(1)
     sys.exit()

@@ -56,6 +56,11 @@ def process(source_folder, target_folder):
     for root, dirs, files in os.walk(source_folder):
         for file_name in files:
             command_in = os.path.join(root, file_name)
+
+            if file_name[0] == '.':
+                os.remove(command_in)
+                continue
+
             time_now = time.strftime("%H-%M-%S ", time.localtime())
             command_out = os.path.join(target_folder, os.path.splitext(file_name)[0] + '.mp4')
 
@@ -63,7 +68,7 @@ def process(source_folder, target_folder):
             command_mp4 = "ffmpeg -i \"{0}\" \"{1}\"".format(command_in, command_out)
 
             # 顺时针90度
-            command_rotate = "ffmpeg -i \"{0}\" -vf \"transpose=2\" \"{1}\"".format(
+            command_rotate = "ffmpeg -i \"{0}\" -vf \"transpose=1\" \"{1}\"".format(
                 command_in, command_out)
 
             # 修改对比度 以及 截取时间
@@ -92,5 +97,7 @@ def process(source_folder, target_folder):
 
 if __name__ == "__main__":
     source_folder = r'D:\1'
-    target_folder = r'D:\1_done'
+    target_folder = source_folder + '_done'
+    if not os.path.exists(target_folder):
+        os.makedirs(target_folder)
     process(source_folder, target_folder)

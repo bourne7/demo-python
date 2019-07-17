@@ -1,8 +1,6 @@
 # !/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import os
-
 
 def process(target_folder):
     command_best = "youtube-dl --proxy socks5://127.0.0.1:1080/ -o '{0}\\%(title)s.%(ext)s' -f bestvideo+bestaudio https://www.youtube.com/watch?v={1}"
