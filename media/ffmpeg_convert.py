@@ -47,6 +47,53 @@ import time
 # e.g. keep them from getting overamplified and just plain white. The value must be a float in range 0.0 to 1.0.
 # A value of 0.0 turns the gamma correction all the way down while 1.0 leaves it at its full strength. Default is "1".
 
+# Merge audio and video
+# https://superuser.com/questions/801547/ffmpeg-add-audio-but-keep-video-length-the-same-not-shortest
+# If video length is shorter than audio length, -shortest is what you want.
+# If video length is longer than audio length, no flag at all will be what you want.
+
+# https://video.stackexchange.com/questions/12905/repeat-loop-input-video-with-ffmpeg/12906
+# Concat demuxer
+# This allows you to loop an input without needing to re-encode.
+#
+# Make a text file. Contents of an example text file to repeat 4 times.
+#
+# file 'input.mp4'
+# file 'input.mp4'
+# file 'input.mp4'
+# file 'input.mp4'
+# Then run ffmpeg:
+#
+# ffmpeg -f concat -i list.txt -c copy output.mp4
+# ffmpeg -f concat -safe 0 -i 1.txt -c copy a.mp3
+
+# loop filter
+# Example using the loop filter to loop 4 times, each loop is 75 frames,
+# each loop skips the first 25 frames of the input:
+#
+# ffmpeg -i input -filter_complex loop=loop=3:size=75:start=25 output
+# Or use the shorthand: loop=3:75:25
+# Filtering requires re-encoding.
+# This filter places all frames into memory.
+# Using loop=3 will loop 4 times.
+# To loop infinitely use -1.
+# You must list the number of frames to loop (shown as 75 in the example above). Max value is 32767.
+# Also see ffmpeg -h filter=loop.
+
+# replace audio
+# https://superuser.com/questions/1137612/ffmpeg-replace-audio-in-video
+# You will want to copy the video stream without re-encoding to save a lot of time but re-encoding the audio might help
+# to prevent incompatibilities:
+#
+# ffmpeg -i v.mp4 -i a.wav -c:v copy -map 0:v:0 -map 1:a:0 new.mp4
+# -map 0:v:0 maps the first (index 0) video stream from the input to the first (index 0) video stream in the output.
+#
+# -map 1:a:0 maps the second (index 1) audio stream from the input to the first (index 0) audio stream in the output.
+#
+# If the audio is longer than the video, you will want to add -shortest before the output file name.
+#
+# Not specifying an audio codec, will automatically select a working one.
+# You can specify one by for example adding -c:a libvorbis after -c:v copy.
 
 REAL_TIME_OUTPUT = True
 
