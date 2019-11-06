@@ -2,6 +2,7 @@ import hashlib
 import os
 
 # 在文件名前面加上需要的文字。
+import re
 import shutil
 import time
 
@@ -57,12 +58,15 @@ def rename_md5(path_src: str) -> None:
 
 # 遍历所有的文件。这里面排除了 "." 开头的文件
 def get_all_files(path):
-    all_file = []
     for dirpath, dirnames, filenames in os.walk(path):
         for dir_name in dirnames:
             print(os.path.join(dirpath, dir_name))
         for pure_file_name in filenames:
             if pure_file_name[0] == ".":
+                continue
+
+            if re.match("\\d{4}-\\d{2}-\\d{2}_\\d{2}-\\d{2}-\\d{2}.*", pure_file_name):
+                print("Formatted name: "+pure_file_name)
                 continue
             full_file_name = os.path.join(dirpath, pure_file_name)
             print(pure_file_name)
@@ -77,14 +81,10 @@ def get_all_files(path):
             os.rename(full_file_name, new_file_name)
             print(new_file_name)
             print()
-            all_file.append(full_file_name)
-    return all_file
 
 
 if __name__ == '__main__':
     print('start')
     # rename_order('', 'D:\1')
     # rename_md5(r'D:\1')
-    all_file = get_all_files(r'/Users/aac/desktop/1')
-    print(all_file)
-    print(all_file.__len__())
+    get_all_files(r'/1')
