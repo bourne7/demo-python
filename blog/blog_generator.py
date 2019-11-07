@@ -37,6 +37,7 @@ def flat_tree(root_path, file_dict, flat_content):
         dir_file_path = os.path.join(root_path, key)
         # 将文件添加到扁平化的数据里面去
         flat_content = flat_content + markdown_formatter(dir_file_path) + '\n'
+        # 如果是个目录，就递归里面的内容
         if os.path.isdir(dir_file_path):
             flat_content = flat_tree(dir_file_path, file_dict[key], flat_content)
     return flat_content
@@ -56,8 +57,12 @@ def markdown_formatter(content_string):
         original_name = content_string.split(os.sep)[2].capitalize()
         content_string = '* **' + uppercaseByMarker('_', original_name).replace('_', '') + '**'
     elif sep_count == 3:
+        # 内容文章需要提供一个基础连接。
+        base_url = 'https://github.com/bourne7/bourne7.github.io/blob/master/'
         # 文章的连接
-        content_string = '  * [' + get_info_from_markdown(content_string) + '](' + content_string + ')'
+        content_string = '  * [' + get_info_from_markdown(content_string) + '](' + base_url + content_string + ')'
+        # 替换 反斜杠到正斜杠
+        content_string = content_string.replace('\\', '/')
     return content_string
 
 
