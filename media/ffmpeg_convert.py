@@ -115,18 +115,22 @@ def process(source_folder, target_folder):
             command_mp4 = "ffmpeg -i \"{0}\" \"{1}\"".format(command_in, command_out)
 
             # 顺时针90度
-            command_rotate = "ffmpeg -i \"{0}\" -vf \"transpose=1\" \"{1}\"".format(
+            command_clockwise = "ffmpeg -i \"{0}\" -vf \"transpose=1\" \"{1}\"".format(
+                command_in, command_out)
+
+            # 逆时针90度
+            command_counter_clockwise = "ffmpeg -i \"{0}\" -vf \"transpose=2\" \"{1}\"".format(
                 command_in, command_out)
 
             # 修改对比度 以及 截取时间
-            command_contrast = "ffmpeg -i \"{0}\" -ss 10 -t 3 -vf \"eq=contrast=1.6\" \"{1}\"".format(
+            command_contrast = "ffmpeg -i \"{0}\" -ss 10 -t 3 -vf \"eq=contrast=1:gamma=1.1\" \"{1}\"".format(
                 command_in, command_out)
 
             # 修改 Gamma
             command_gamma = "ffmpeg -i \"{0}\" -vf \"eq=gamma=1.65\" \"{1}\"".format(
                 command_in, command_out)
 
-            command_real = command_rotate
+            command_real = command_counter_clockwise
 
             if REAL_TIME_OUTPUT:
                 my_process = subprocess.Popen(command_real, stdout=subprocess.PIPE,

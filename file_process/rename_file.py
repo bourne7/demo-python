@@ -56,8 +56,7 @@ def rename_md5(path_src: str) -> None:
             shutil.copyfile(file_name_old, file_name_new)
 
 
-# 遍历所有的文件。这里面排除了 "." 开头的文件
-def get_all_files(path):
+def rename_file_with_create_date(path):
     for dirpath, dirnames, filenames in os.walk(path):
         for dir_name in dirnames:
             print(os.path.join(dirpath, dir_name))
@@ -66,7 +65,7 @@ def get_all_files(path):
                 continue
 
             if re.match("\\d{4}-\\d{2}-\\d{2}_\\d{2}-\\d{2}-\\d{2}.*", pure_file_name):
-                print("Formatted name: "+pure_file_name)
+                print("Formatted name: " + pure_file_name)
                 continue
             full_file_name = os.path.join(dirpath, pure_file_name)
             print(pure_file_name)
@@ -83,8 +82,39 @@ def get_all_files(path):
             print()
 
 
+# 遍历所有的文件。这里面排除了 "." 开头的文件
+def go_through_files(path):
+    for dirpath, dirnames, filenames in os.walk(path):
+        for dir_name in dirnames:
+            print(os.path.join(dirpath, dir_name))
+        for pure_file_name in filenames:
+            if pure_file_name[0] == ".":
+                continue
+
+            conjunction = '_'
+            full_file_name = os.path.join(dirpath, pure_file_name)
+            pure_file_name_new = conjunction.join(pure_file_name.split(conjunction)[1:])
+            new_file_name_full = os.path.join(dirpath, pure_file_name_new)
+
+            os.rename(full_file_name, new_file_name_full)
+            print(new_file_name_full)
+
+
+# 删除指定文件夹里面的所有指定后缀的文件
+def remove_specified_files(path, suffix):
+    for dirpath, dirnames, filenames in os.walk(path):
+        for pure_file_name in filenames:
+            if pure_file_name[0] == ".":
+                continue
+
+            if os.path.splitext(pure_file_name)[1][1:] == suffix.lower():
+                full_file_name = os.path.join(dirpath, pure_file_name)
+                print(full_file_name)
+                os.remove(full_file_name)
+
+
 if __name__ == '__main__':
-    print('start')
-    # rename_order('', 'D:\1')
-    # rename_md5(r'D:\1')
-    get_all_files(r'/1')
+    # rename_md5(r'')
+    # rename_file_with_create_date('')
+    # go_through_files(r'E:\github')
+    remove_specified_files(r'E:\github', 'log')
