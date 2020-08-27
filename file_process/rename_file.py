@@ -11,7 +11,8 @@ def add_before_name(pattern: str, path_src: str) -> None:
     i = 0
     for files in os.listdir(path_src):
         file_name_old = path_src + os.sep + files
-        file_name_new = path_src + os.sep + pattern + '{0:0>4d}_'.format(i) + files.replace(' ', '_').lower()
+        file_name_new = path_src + os.sep + pattern + \
+            '{0:0>4d}_'.format(i) + files.replace(' ', '_').lower()
         i += 1
         print(file_name_old + " -> " + file_name_new)
         os.rename(file_name_old, file_name_new)
@@ -23,7 +24,8 @@ def rename_order(pattern: str, path_src: str) -> None:
     for files in os.listdir(path_src):
         file_name_old = path_src + os.sep + files
         file_type = os.path.splitext(files)[1]
-        file_name_new = path_src + os.sep + pattern + '{0:0>4d}'.format(i) + file_type.lower()
+        file_name_new = path_src + os.sep + pattern + \
+            '{0:0>4d}'.format(i) + file_type.lower()
         i += 1
         print(file_name_old + " -> " + file_name_new)
         os.rename(file_name_old, file_name_new)
@@ -50,7 +52,7 @@ def rename_md5(path_src: str) -> None:
             md5 = hashlib.md5(f.read()).hexdigest()
 
             file_type = os.path.splitext(files)[1]
-            file_name_new = path_src_md5 + os.sep + md5 + file_type
+            file_name_new = (path_src_md5 + os.sep + md5 + file_type).lower()
             i += 1
             print(file_name_old + " -> " + file_name_new)
             shutil.copyfile(file_name_old, file_name_new)
@@ -75,7 +77,8 @@ def rename_file_with_create_date(path):
             str_time = time.strftime("%Y-%m-%d_%H-%M-%S", local_time)
             print(str_time)
 
-            new_file_name = os.path.join(dirpath, str_time + "_" + pure_file_name)
+            new_file_name = os.path.join(
+                dirpath, str_time + "_" + pure_file_name)
 
             os.rename(full_file_name, new_file_name)
             print(new_file_name)
@@ -93,7 +96,8 @@ def go_through_files(path):
 
             conjunction = '_'
             full_file_name = os.path.join(dirpath, pure_file_name)
-            pure_file_name_new = conjunction.join(pure_file_name.split(conjunction)[1:])
+            pure_file_name_new = conjunction.join(
+                pure_file_name.split(conjunction)[1:])
             new_file_name_full = os.path.join(dirpath, pure_file_name_new)
 
             os.rename(full_file_name, new_file_name_full)
@@ -114,7 +118,7 @@ def remove_specified_files(path, suffix):
 
 
 if __name__ == '__main__':
-    # rename_md5(r'')
+    # rename_md5(r'E:\\2')
     # rename_file_with_create_date('')
-    # go_through_files(r'E:\github')
-    remove_specified_files(r'E:\github', 'log')
+    # go_through_files(r'E:\\github')
+    remove_specified_files(r'E:\\github', 'log')
