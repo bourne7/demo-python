@@ -14,8 +14,7 @@ def add_before_name(pattern: str, path_src: str) -> None:
     i = 0
     for files in os.listdir(path_src):
         file_name_old = path_src + os.sep + files
-        file_name_new = path_src + os.sep + pattern + \
-            '{0:0>4d}_'.format(i) + files.replace(' ', '_').lower()
+        file_name_new = path_src + os.sep + pattern + '{0:0>4d}_'.format(i) + files.replace(' ', '_').lower()
         i += 1
         print(file_name_old + " -> " + file_name_new)
         os.rename(file_name_old, file_name_new)
@@ -27,8 +26,7 @@ def rename_index(pattern: str, path_src: str) -> None:
     for files in os.listdir(path_src):
         file_name_old = path_src + os.sep + files
         file_type = os.path.splitext(files)[1]
-        file_name_new = path_src + os.sep + pattern + \
-            '{0:0>4d}'.format(i) + file_type.lower()
+        file_name_new = path_src + os.sep + pattern + '{0:0>4d}'.format(i) + file_type.lower()
         i += 1
         print(file_name_old + " -> " + file_name_new)
         os.rename(file_name_old, file_name_new)

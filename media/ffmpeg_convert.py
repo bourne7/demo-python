@@ -97,9 +97,27 @@ import time
 
 REAL_TIME_OUTPUT = True
 
+COMMAND_DICT = {
+    # 直接转换成为 mp4
+    'command_mp4': 'ffmpeg -i "{0}" "{1}"',
 
-def process(source_folder, target_folder):
-    i = 1
+    # 顺时针90度
+    'command_clockwise': 'ffmpeg -i "{0}" -vf "transpose=1" "{1}"',
+
+    # 逆时针90度
+    'command_counter_clockwise': 'ffmpeg -i "{0}" -vf "transpose=2" "{1}"',
+
+    # 修改对比度 以及 截取时间
+    'command_contrast': 'ffmpeg -i "{0}" -ss 10 -t 3 -vf "eq=contrast=1:gamma=1.1" "{1}"',
+
+    # 修改 Gamma
+    'command_gamma': 'ffmpeg -i "{0}" -vf "eq=gamma=1.65" "{1}"'
+}
+
+TOTAL_PROCESS_COUNT = 1
+
+
+def process(source_folder, target_folder, command):
     for root, dirs, files in os.walk(source_folder):
         for file_name in files:
             command_in = os.path.join(root, file_name)
@@ -108,47 +126,56 @@ def process(source_folder, target_folder):
                 os.remove(command_in)
                 continue
 
-            time_now = time.strftime("%H-%M-%S ", time.localtime())
-            command_out = os.path.join(target_folder, os.path.splitext(file_name)[0] + '.mp4')
+            command_out = os.path.join(target_folder, os.path.splitext(file_name)[0].replace('  ', ' ') + '.mp4')
 
-            # 直接转换成为 mp4
-            command_mp4 = "ffmpeg -i \"{0}\" \"{1}\"".format(command_in, command_out)
+            command_real = COMMAND_DICT[command].format(command_in, command_out)
+            print('Processing: ', command_real)
 
-            # 顺时针90度
-            command_clockwise = "ffmpeg -i \"{0}\" -vf \"transpose=1\" \"{1}\"".format(
-                command_in, command_out)
-
-            # 逆时针90度
-            command_counter_clockwise = "ffmpeg -i \"{0}\" -vf \"transpose=2\" \"{1}\"".format(
-                command_in, command_out)
-
-            # 修改对比度 以及 截取时间
-            command_contrast = "ffmpeg -i \"{0}\" -ss 10 -t 3 -vf \"eq=contrast=1:gamma=1.1\" \"{1}\"".format(
-                command_in, command_out)
-
-            # 修改 Gamma
-            command_gamma = "ffmpeg -i \"{0}\" -vf \"eq=gamma=1.65\" \"{1}\"".format(
-                command_in, command_out)
-
-            command_real = command_counter_clockwise
-
-            if REAL_TIME_OUTPUT:
-                my_process = subprocess.Popen(command_real, stdout=subprocess.PIPE,
-                                              stderr=subprocess.STDOUT,
-                                              universal_newlines=True, encoding='utf-8')
-                while True:
-                    for line in my_process.stdout:
-                        print('Converting: {0} -> {1}'.format(i, line))
-                    break
-            else:
-                os.system(command_real)
-            print('Process: ', i, ' completed.')
-            i = i + 1
+            execute_command(command_real)
 
 
-if __name__ == "__main__":
-    source_folder = r'D:\1'
+def execute_command(command_real):
+    global TOTAL_PROCESS_COUNT
+    if REAL_TIME_OUTPUT:
+        my_process = subprocess.Popen(command_real, stdout=subprocess.PIPE,
+                                      stderr=subprocess.STDOUT,
+                                      universal_newlines=True, encoding='utf-8')
+        while True:
+            for line in my_process.stdout:
+                print('Converting: {0} -> {1}'.format(TOTAL_PROCESS_COUNT, line))
+            break
+    else:
+        os.system(command_real)
+    print('Process: ', TOTAL_PROCESS_COUNT, ' completed.')
+    TOTAL_PROCESS_COUNT = TOTAL_PROCESS_COUNT + 1
+
+
+def convert_one_command():
+    source_folder = r'D:\\1\\l'
     target_folder = source_folder + '_done'
     if not os.path.exists(target_folder):
         os.makedirs(target_folder)
-    process(source_folder, target_folder)
+    process(source_folder, target_folder, 'command_counter_clockwise')
+
+
+def convert_all_command():
+    source_folder = r'D:\\1\\l'
+    target_folder = source_folder + '_done'
+    if not os.path.exists(target_folder):
+        os.makedirs(target_folder)
+    process(source_folder, target_folder, 'command_counter_clockwise')
+    source_folder = r'D:\\1\\r'
+    target_folder = source_folder + '_done'
+    if not os.path.exists(target_folder):
+        os.makedirs(target_folder)
+    process(source_folder, target_folder, 'command_clockwise')
+    source_folder = r'D:\\1\\d'
+    target_folder = source_folder + '_done'
+    if not os.path.exists(target_folder):
+        os.makedirs(target_folder)
+    process(source_folder, target_folder, 'command_mp4')
+
+
+if __name__ == "__main__":
+    # convert_one_command()
+    convert_all_command()
